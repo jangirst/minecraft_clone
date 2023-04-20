@@ -6,8 +6,8 @@ export const Ground = () => {
 
     // add a plane ground to the canvas
     const [ref] = usePlane(() => ({
-        // the ground is standing upwards --> solution: it has to be rotated by Pi/4 degree radian (45°)
-        rotation: [-Math.PI/4, 0, 0], position: [0, 0, 0]
+        // the ground is standing upwards --> solution: it has to be rotated by Pi/2 degree radian (90°)
+        rotation: [-Math.PI/2, 0, 0], position: [0, 0, 0]
     }));
 
     // the ground looks blury --> solution: use a filter, so that it looks pixelated
