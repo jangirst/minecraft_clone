@@ -3,9 +3,13 @@ import { useCallback, useEffect, useState } from "react"
 function actionByKey(key) {
     const keyActionMap = {
         KeyW: 'moveForward',
+        ArrowUp: 'moveForward',
         KeyS: 'moveBackward',
+        ArrowDown: 'moveBackward',
         KeyA: 'moveLeft',
+        ArrowLeft: 'moveLeft',
         KeyD: 'moveRight',
+        ArrowRight: 'moveRight',
         Space: 'jump',
         Digit1: 'dirt',
         Digit2: 'grass',
