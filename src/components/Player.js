@@ -4,13 +4,20 @@ import { useEffect, useRef } from "react";
 import { Vector3 } from "three";
 import { useKeyboard } from "../hooks/useKeyboard";
 
+// important constances for the game
+const JUMP_FORCE = 4;
+const SPEED = 4;
+
+
 export const Player = () => {
 
     // Add the hook for the players movement
-    const actions = useKeyboard();
-    console.log('actions', Object.entries(actions).filter(([k, v]) => v));
+    const { moveForward, moveBackward, moveLeft, moveRight, jump} = useKeyboard();
 
+    // Add a camera to the scene
     const {camera} = useThree();
+
+    // Add a sphere = player to the scene
     const [ref, api] = useSphere(() => ({
         mass: 1,
         type: 'Dynamic',
@@ -46,7 +53,39 @@ export const Player = () => {
         // Attach the camera to the player's current position
         camera.position.copy(new Vector3(pos.current[0], pos.current[1], pos.current[2]));
 
-        // api.velocity.set(0, 1, 0);
+        const direction = new Vector3();
+
+        // Manipulation the z-coordinats für the forward- and backward movement
+        const frontVector = new Vector3(
+            0,
+            0,
+            (moveBackward ? 1 : 0) - (moveForward ? 1 : 0)
+        );
+
+        // Manipulate the x-coordinats for the left- and right movement
+        const sideVector = new Vector3(
+            (moveLeft ? 1 : 0) - (moveRight ? 1 : 0),
+            0,
+            0
+        );
+
+        direction
+            .subVectors(frontVector, sideVector)
+            .normalize()
+            .multiplyScalar(SPEED)
+            .applyEuler(camera.rotation);
+
+
+        // Apply the direction to the player
+        api.velocity.set(direction.x, vel.current[1], direction.z);
+
+        // Accelerate the player with JUMP_FORCE upwards, if the player is not in die air
+        //
+        // BUG: now it is possible to jump from the air, in the moment when up- and downforce are less then 0.05
+        //
+        if ( jump && Math.abs(vel.current[1] < 0.05) ) {
+            api.velocity.set(vel.current[0], JUMP_FORCE, vel.current[2]);
+        }
 
     });
 
